@@ -14,12 +14,14 @@
           [class.last]="i === knockedPins.length - 1 && j === 0"
           *ngFor="let roll of frame.rolls; let j = index"
         >
-          <span class="point" *ngIf="roll === 10 && j === 0; else spare"
+          <span class="point" *ngIf="j === 0 && +roll === 10; else spare"
             >&#x2715;</span
           >
           <ng-template #spare>
-            <span class="point" *ngIf="roll === 10 && j === 1; else other"
-              >/</span
+            <span
+              class="point"
+              *ngIf="j === 1 && +roll + +frame.rolls[0] === 10; else other"
+              >{{ +roll > 0 ? "/" : "" }}</span
             >
           </ng-template>
 

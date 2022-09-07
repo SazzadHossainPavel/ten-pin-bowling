@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 
 interface Frame {
-  rolls: [number, number];
-  cumulativeSum: number;
+  rolls: [string, string];
+  cumulativeSum: string;
 }
 
 @Component({
@@ -18,54 +18,97 @@ export class AppComponent {
 
   constructor() {
     for (let i = 0; i < this.noOfFrames; i++) {
-      this.knockedPins.push({ rolls: [0, 0], cumulativeSum: 0 });
+      this.knockedPins.push({ rolls: ['', ''], cumulativeSum: '' });
     }
-
-    this.knockedPins[this.noOfFrames - 1].rolls.push(0);
   }
 
-  random() {
-    return Math.ceil(Math.random() * 11) - 1;
-  }
-
-  randomRoll(rollZeroValue: number | undefined) {
+  randomRoll(rollZeroValue?: number) {
     return rollZeroValue
-      ? Math.ceil(Math.random() * 11 - rollZeroValue) - 1
-      : Math.ceil(Math.random() * 11) - 1;
+      ? Math.ceil(Math.random() * (11 - rollZeroValue)) - 1
+      : 10;
+    // : Math.ceil(Math.random() * 11) - 1;
   }
 
-  isOddOrEven(n: number): number {
+  getRollIndex(n: number): number {
     return n % 2 == 0 ? 0 : 1;
   }
 
   generateKnockPins() {
     this.currentRoll++;
 
-    const rollIndex = this.isOddOrEven(this.currentRoll);
+    const rollIndex = this.getRollIndex(this.currentRoll);
 
-    const currentScore = this.random();
-
-    if (rollIndex === 0 && currentScore === 10) {
-      this.currentRoll++;
-    }
+    let currentScore = 0;
 
     this.currentFrame = Math.floor(this.currentRoll / 2);
 
     if (this.currentFrame < this.noOfFrames) {
-      this.knockedPins[this.currentFrame].rolls[rollIndex] = currentScore;
+      if (this.knockedPins[this.currentFrame].rolls[0] === '') {
+        currentScore = this.randomRoll();
+      } else {
+        currentScore = this.randomRoll(
+          +this.knockedPins[this.currentFrame].rolls[0]
+        );
+      }
+
+      if (rollIndex === 0 && currentScore === 10) {
+        this.currentRoll++;
+
+        if (this.currentFrame + 1 === this.noOfFrames) {
+          this.knockedPins[this.noOfFrames - 1].rolls.push('');
+        }
+      }
+
+      this.knockedPins[this.currentFrame].rolls[rollIndex] =
+        currentScore.toString();
+
+      const secondLastFrame =
+        this.currentFrame > 1 ? this.currentFrame - 1 : -1;
+
+      if (secondLastFrame !== -1) {
+        const lastStrike = +this.knockedPins[secondLastFrame].rolls[0] === 10;
+
+        if (lastStrike && this.knockedPins[this.currentFrame].rolls[1] === '') {
+          this.knockedPins[secondLastFrame].cumulativeSum = (
+            +this.knockedPins[secondLastFrame].cumulativeSum +
+            +this.knockedPins[this.currentFrame].rolls[0]
+          ).toString();
+        }
+      }
+
+      const previousFrame = this.currentFrame > 0 ? this.currentFrame - 1 : -1;
+
+      if (previousFrame !== -1) {
+        const previousSpare =
+          +this.knockedPins[previousFrame].rolls[1] > 0 &&
+          +this.knockedPins[previousFrame].rolls[0] +
+            +this.knockedPins[previousFrame].rolls[1] ===
+            10;
+
+        const previousStrike = +this.knockedPins[previousFrame].rolls[0] === 10;
+
+        if (
+          (previousSpare || previousStrike) &&
+          this.knockedPins[this.currentFrame].rolls[1] === ''
+        ) {
+          this.knockedPins[previousFrame].cumulativeSum = (
+            +this.knockedPins[previousFrame].cumulativeSum +
+            +this.knockedPins[this.currentFrame].rolls[0]
+          ).toString();
+        }
+      }
 
       const cumulativeSumUpTo =
         this.currentFrame > 0
           ? this.knockedPins[this.currentFrame - 1].cumulativeSum
-          : 0;
+          : '';
 
-      this.knockedPins[this.currentFrame].cumulativeSum =
-        cumulativeSumUpTo +
-        this.knockedPins[this.currentFrame].rolls[0] +
-        this.knockedPins[this.currentFrame].rolls[1];
+      this.knockedPins[this.currentFrame].cumulativeSum = (
+        +cumulativeSumUpTo +
+        +this.knockedPins[this.currentFrame].rolls[0] +
+        +this.knockedPins[this.currentFrame].rolls[1]
+      ).toString();
     }
-
-    console.log(this.knockedPins);
   }
 
   clearScore() {
@@ -74,9 +117,7 @@ export class AppComponent {
     this.currentFrame = -1;
 
     for (let i = 0; i <= 9; i++) {
-      this.knockedPins.push({ rolls: [0, 0], cumulativeSum: 0 });
+      this.knockedPins.push({ rolls: ['', ''], cumulativeSum: '' });
     }
-
-    this.knockedPins[this.noOfFrames - 1].rolls.push(0);
   }
 }
