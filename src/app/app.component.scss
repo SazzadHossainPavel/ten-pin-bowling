@@ -1,0 +1,120 @@
+header {
+  background-color: #337ab7;
+  color: #fff;
+  height: 60px;
+
+  & .flex {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  & .container {
+    width: 90%;
+    max-width: 1190px;
+    margin: 0 auto;
+    overflow: auto;
+    height: 100%;
+
+    & h1 {
+      margin: 0;
+    }
+  }
+}
+
+.pt-2 {
+  padding-top: 2em;
+
+  & .container {
+    width: 90%;
+    max-width: 1190px;
+    margin: 0 auto;
+
+    & .score-board {
+      display: flex;
+      justify-content: center;
+      height: 80px;
+      width: 100%;
+      flex-wrap: wrap;
+
+      & .box {
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        height: 100%;
+        width: 100px;
+        display: flex;
+        justify-content: flex-end;
+        position: relative;
+
+        & .frame {
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          font-size: 2rem;
+          padding-left: 12px;
+        }
+
+        & .inner-box {
+          border-left: 1px solid rgba(0, 0, 0, 0.5);
+          border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+          height: 50%;
+          width: 33.33%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 1.5rem;
+        }
+
+        & .last {
+          border: none;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+        }
+      }
+    }
+  }
+}
+
+.pt-2 {
+  padding-top: 2em;
+
+  & .container {
+    width: 90%;
+    max-width: 1190px;
+    margin: 0 auto;
+
+    & .btn {
+      padding: 10px 30px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+
+    & .btn:hover {
+      scale: 0.98;
+      background-color: #204d74;
+    }
+
+    & .btn-primary {
+      background-color: #337ab7;
+      color: #fff;
+    }
+
+    & .btn-outline {
+      background-color: #fff;
+      border: 1px solid #337ab7;
+    }
+
+    & .btn-outline:hover {
+      scale: 0.98;
+      background-color: #204d74;
+      color: #fff;
+    }
+
+    & .mr-1 {
+      margin-right: 1em;
+    }
+  }
+
+  & .generate-score {
+    text-align: center;
+  }
+}
