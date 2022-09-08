@@ -9,10 +9,11 @@
     <div class="pins">
       <button
         class="btn btn-roll"
-        (click)="addPins(i)"
-        *ngFor="let i of availablePins"
+        [class.disabled]="!pins.isAvailable"
+        (click)="addPins(pins.value)"
+        *ngFor="let pins of allPins"
       >
-        {{ i }}
+        {{ pins.value }}
       </button>
     </div>
   </div>
@@ -50,7 +51,7 @@
 
 <section class="pt-2">
   <div class="container generate-score">
-    <button class="btn btn-primary mr-1" (click)="generateKnockPins()">
+    <button class="btn btn-primary mr-1" (click)="startGame()">
       Random knocked pins
     </button>
 

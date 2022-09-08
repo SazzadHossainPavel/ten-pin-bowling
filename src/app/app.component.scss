@@ -48,6 +48,14 @@ header {
         border: 1px solid #000;
       }
 
+      & .disabled {
+        cursor: default;
+        pointer-events: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        color: gray;
+        background-color: #fff;
+      }
+
       & .btn:hover {
         background-color: #708090;
         color: #fff;
