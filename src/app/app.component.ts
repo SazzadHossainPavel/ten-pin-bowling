@@ -52,14 +52,6 @@ export class AppComponent {
   }
 
   calculateScore(currentScore: number) {
-    if (this.frameIndex === 0 && currentScore === 10) {
-      this.noOfRolls++;
-
-      if (this.currentFrame + 1 === this.noOfFrames) {
-        this.knockedPins[this.noOfFrames - 1].rolls.push('');
-      }
-    }
-
     this.knockedPins[this.currentFrame].rolls[this.frameIndex] =
       currentScore.toString();
 
@@ -70,23 +62,35 @@ export class AppComponent {
     if (secondLastFrame !== -1) {
       if (+this.knockedPins[secondLastFrame].rolls[0] === 10) {
         if (+this.knockedPins[previousFrame].rolls[0] === 10) {
-          this.knockedPins[secondLastFrame].cumulativeSum = (
-            +this.knockedPins[secondLastFrame].cumulativeSum +
-            +this.knockedPins[this.currentFrame].rolls[0]
-          ).toString();
+          if (this.frameIndex === 0) {
+            this.knockedPins[secondLastFrame].cumulativeSum = (
+              +this.knockedPins[secondLastFrame].cumulativeSum +
+              +this.knockedPins[this.currentFrame].rolls[0]
+            ).toString();
+
+            this.knockedPins[previousFrame].cumulativeSum = (
+              +this.knockedPins[previousFrame].cumulativeSum +
+              +this.knockedPins[this.currentFrame].rolls[0]
+            ).toString();
+          }
         }
       }
     }
 
     if (previousFrame !== -1) {
       if (+this.knockedPins[previousFrame].rolls[0] === 10) {
-        if (+this.knockedPins[this.currentFrame].rolls[0] !== 10) {
-          if (this.frameIndex === 1) {
-            this.knockedPins[previousFrame].cumulativeSum = (
-              +this.knockedPins[previousFrame].cumulativeSum +
-              +this.knockedPins[this.currentFrame].rolls[1]
-            ).toString();
-          }
+        if (this.frameIndex === 0) {
+          this.knockedPins[previousFrame].cumulativeSum = (
+            +this.knockedPins[previousFrame].cumulativeSum +
+            +this.knockedPins[this.currentFrame].rolls[0]
+          ).toString();
+        }
+
+        if (this.frameIndex === 1) {
+          this.knockedPins[previousFrame].cumulativeSum = (
+            +this.knockedPins[previousFrame].cumulativeSum +
+            +this.knockedPins[this.currentFrame].rolls[1]
+          ).toString();
         }
       }
     }
@@ -96,7 +100,8 @@ export class AppComponent {
         this.frameIndex === 0 &&
         +this.knockedPins[previousFrame].rolls[0] +
           +this.knockedPins[previousFrame].rolls[1] ===
-          10;
+          10 &&
+        +this.knockedPins[previousFrame].rolls[0] !== 10;
 
       if (previousSpare) {
         this.knockedPins[previousFrame].cumulativeSum = (
@@ -126,7 +131,16 @@ export class AppComponent {
     this.currentFrame = Math.floor(this.noOfRolls / 2);
 
     if (this.currentFrame < this.noOfFrames) {
-      const currentScore = n ? n : this.getRandomRollScore();
+      const currentScore =
+        typeof n !== 'undefined' ? n : this.getRandomRollScore();
+
+      if (this.frameIndex === 0 && currentScore === 10) {
+        this.noOfRolls++;
+
+        if (this.currentFrame === 9) {
+          this.knockedPins[this.currentFrame].rolls.push('');
+        }
+      }
 
       this.calculateScore(currentScore);
     }
