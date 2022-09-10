@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 interface Frame {
-  rolls: [string, string];
+  rolls: [string, string, string?];
   cumulativeSum: string;
 }
 
@@ -17,6 +17,7 @@ export class AppComponent {
   noOfRolls: number = -1;
   currentFrame: number = -1;
   frameIndex: number = -1;
+  isGameOver = false;
 
   constructor() {
     for (let i = 0; i < this.noOfFrames; i++) {
@@ -34,7 +35,14 @@ export class AppComponent {
   }
 
   getRollIndex(n: number): number {
-    return n % 2 == 0 ? 0 : 1;
+    if (
+      this.currentFrame !== -1 &&
+      this.knockedPins[this.currentFrame].rolls.length > 2
+    ) {
+      return n % 3 == 0 ? 0 : n % 3 === 1 ? 1 : 2;
+    } else {
+      return n % 2 == 0 ? 0 : 1;
+    }
   }
 
   getRandomRollScore() {
@@ -51,10 +59,34 @@ export class AppComponent {
     return currentScore;
   }
 
-  calculateScore(currentScore: number) {
-    this.knockedPins[this.currentFrame].rolls[this.frameIndex] =
-      currentScore.toString();
+  checkGameOver() {
+    if (this.currentFrame === 9) {
+      if (
+        +this.knockedPins[9].rolls[0] === 10 &&
+        this.knockedPins[9].rolls[1] !== '' &&
+        this.knockedPins[9].rolls[2] !== ''
+      ) {
+        this.isGameOver = true;
+        return;
+      } else if (
+        +this.knockedPins[9].rolls[0] !== 10 &&
+        +this.knockedPins[9].rolls[0] + +this.knockedPins[9].rolls[1] === 10 &&
+        this.knockedPins[9].rolls[2] !== ''
+      ) {
+        this.isGameOver = true;
+        return;
+      } else if (
+        +this.knockedPins[9].rolls[0] !== 10 &&
+        +this.knockedPins[9].rolls[0] + +this.knockedPins[9].rolls[1] !== 10 &&
+        this.knockedPins[9].rolls[1] !== ''
+      ) {
+        this.isGameOver = true;
+        return;
+      }
+    }
+  }
 
+  calculateScore() {
     const secondLastFrame = this.currentFrame > 1 ? this.currentFrame - 2 : -1;
 
     const previousFrame = this.currentFrame > 0 ? this.currentFrame - 1 : -1;
@@ -123,26 +155,44 @@ export class AppComponent {
     ).toString();
   }
 
+  addThirdIndex(currentScore: number) {
+    if (this.frameIndex === 0 && currentScore === 10) {
+      if (this.currentFrame === 9) {
+        this.knockedPins[this.currentFrame].rolls.push('');
+      } else {
+        this.noOfRolls++;
+      }
+    } else if (
+      this.currentFrame === 9 &&
+      +this.knockedPins[9].rolls[0] !== 10 &&
+      +this.knockedPins[9].rolls[0] + +this.knockedPins[9].rolls[1] === 10 &&
+      this.knockedPins[9].rolls.length === 2
+    ) {
+      this.knockedPins[this.currentFrame].rolls.push('');
+    }
+  }
+
   startGame(n?: number) {
     this.noOfRolls++;
 
     this.frameIndex = this.getRollIndex(this.noOfRolls);
 
-    this.currentFrame = Math.floor(this.noOfRolls / 2);
+    this.currentFrame =
+      this.currentFrame !== -1 &&
+      this.knockedPins[this.currentFrame].rolls.length > 2
+        ? 9
+        : Math.floor(this.noOfRolls / 2);
+
+    const currentScore =
+      typeof n !== 'undefined' ? n : this.getRandomRollScore();
+
+    this.knockedPins[this.currentFrame].rolls[this.frameIndex] =
+      currentScore.toString();
 
     if (this.currentFrame < this.noOfFrames) {
-      const currentScore =
-        typeof n !== 'undefined' ? n : this.getRandomRollScore();
-
-      if (this.frameIndex === 0 && currentScore === 10) {
-        this.noOfRolls++;
-
-        if (this.currentFrame === 9) {
-          this.knockedPins[this.currentFrame].rolls.push('');
-        }
-      }
-
-      this.calculateScore(currentScore);
+      this.addThirdIndex(currentScore);
+      this.calculateScore();
+      this.checkGameOver();
     }
   }
 
@@ -151,6 +201,7 @@ export class AppComponent {
     this.knockedPins = [];
     this.noOfRolls = -1;
     this.currentFrame = -1;
+    this.isGameOver = false;
 
     for (let i = 0; i < this.noOfFrames; i++) {
       this.allPins.push({ isAvailable: true, value: i });

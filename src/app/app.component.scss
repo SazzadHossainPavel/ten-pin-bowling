@@ -151,6 +151,11 @@ header {
       color: #fff;
     }
 
+    & .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
     & .m-1 {
       margin: 1em;
     }
