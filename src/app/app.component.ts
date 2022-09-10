@@ -52,7 +52,7 @@ export class AppComponent {
       currentScore = this.randomRoll();
     } else {
       currentScore = this.randomRoll(
-        +this.knockedPins[this.currentFrame].rolls[0]
+        Number(this.knockedPins[this.currentFrame].rolls[0])
       );
     }
 
@@ -62,22 +62,26 @@ export class AppComponent {
   checkGameOver() {
     if (this.currentFrame === 9) {
       if (
-        +this.knockedPins[9].rolls[0] === 10 &&
+        Number(this.knockedPins[9].rolls[0]) === 10 &&
         this.knockedPins[9].rolls[1] !== '' &&
         this.knockedPins[9].rolls[2] !== ''
       ) {
         this.isGameOver = true;
         return;
       } else if (
-        +this.knockedPins[9].rolls[0] !== 10 &&
-        +this.knockedPins[9].rolls[0] + +this.knockedPins[9].rolls[1] === 10 &&
+        Number(this.knockedPins[9].rolls[0]) !== 10 &&
+        Number(this.knockedPins[9].rolls[0]) +
+          Number(this.knockedPins[9].rolls[1]) ===
+          10 &&
         this.knockedPins[9].rolls[2] !== ''
       ) {
         this.isGameOver = true;
         return;
       } else if (
-        +this.knockedPins[9].rolls[0] !== 10 &&
-        +this.knockedPins[9].rolls[0] + +this.knockedPins[9].rolls[1] !== 10 &&
+        Number(this.knockedPins[9].rolls[0]) !== 10 &&
+        Number(this.knockedPins[9].rolls[0]) +
+          Number(this.knockedPins[9].rolls[1]) !==
+          10 &&
         this.knockedPins[9].rolls[1] !== ''
       ) {
         this.isGameOver = true;
@@ -92,17 +96,17 @@ export class AppComponent {
     const previousFrame = this.currentFrame > 0 ? this.currentFrame - 1 : -1;
 
     if (secondLastFrame !== -1) {
-      if (+this.knockedPins[secondLastFrame].rolls[0] === 10) {
-        if (+this.knockedPins[previousFrame].rolls[0] === 10) {
+      if (Number(this.knockedPins[secondLastFrame].rolls[0]) === 10) {
+        if (Number(this.knockedPins[previousFrame].rolls[0]) === 10) {
           if (this.frameIndex === 0) {
             this.knockedPins[secondLastFrame].cumulativeSum = (
-              +this.knockedPins[secondLastFrame].cumulativeSum +
-              +this.knockedPins[this.currentFrame].rolls[0]
+              Number(this.knockedPins[secondLastFrame].cumulativeSum) +
+              Number(this.knockedPins[this.currentFrame].rolls[0])
             ).toString();
 
             this.knockedPins[previousFrame].cumulativeSum = (
-              +this.knockedPins[previousFrame].cumulativeSum +
-              +this.knockedPins[this.currentFrame].rolls[0]
+              Number(this.knockedPins[previousFrame].cumulativeSum) +
+              Number(this.knockedPins[this.currentFrame].rolls[0])
             ).toString();
           }
         }
@@ -113,15 +117,15 @@ export class AppComponent {
       if (+this.knockedPins[previousFrame].rolls[0] === 10) {
         if (this.frameIndex === 0) {
           this.knockedPins[previousFrame].cumulativeSum = (
-            +this.knockedPins[previousFrame].cumulativeSum +
-            +this.knockedPins[this.currentFrame].rolls[0]
+            Number(this.knockedPins[previousFrame].cumulativeSum) +
+            Number(this.knockedPins[this.currentFrame].rolls[0])
           ).toString();
         }
 
         if (this.frameIndex === 1) {
           this.knockedPins[previousFrame].cumulativeSum = (
-            +this.knockedPins[previousFrame].cumulativeSum +
-            +this.knockedPins[this.currentFrame].rolls[1]
+            Number(this.knockedPins[previousFrame].cumulativeSum) +
+            Number(this.knockedPins[this.currentFrame].rolls[1])
           ).toString();
         }
       }
@@ -130,15 +134,15 @@ export class AppComponent {
     if (previousFrame !== -1) {
       const previousSpare =
         this.frameIndex === 0 &&
-        +this.knockedPins[previousFrame].rolls[0] +
-          +this.knockedPins[previousFrame].rolls[1] ===
+        Number(this.knockedPins[previousFrame].rolls[0]) +
+          Number(this.knockedPins[previousFrame].rolls[1]) ===
           10 &&
-        +this.knockedPins[previousFrame].rolls[0] !== 10;
+        Number(this.knockedPins[previousFrame].rolls[0]) !== 10;
 
       if (previousSpare) {
         this.knockedPins[previousFrame].cumulativeSum = (
-          +this.knockedPins[previousFrame].cumulativeSum +
-          +this.knockedPins[this.currentFrame].rolls[0]
+          Number(this.knockedPins[previousFrame].cumulativeSum) +
+          Number(this.knockedPins[this.currentFrame].rolls[0])
         ).toString();
       }
     }
@@ -148,11 +152,19 @@ export class AppComponent {
         ? this.knockedPins[this.currentFrame - 1].cumulativeSum
         : '';
 
-    this.knockedPins[this.currentFrame].cumulativeSum = (
-      +cumulativeSumUpTo +
-      +this.knockedPins[this.currentFrame].rolls[0] +
-      +this.knockedPins[this.currentFrame].rolls[1]
-    ).toString();
+    this.knockedPins[this.currentFrame].cumulativeSum =
+      this.knockedPins[this.currentFrame].rolls.length === 3
+        ? (
+            Number(cumulativeSumUpTo) +
+            Number(this.knockedPins[this.currentFrame].rolls[0]) +
+            Number(this.knockedPins[this.currentFrame].rolls[1]) +
+            Number(this.knockedPins[this.currentFrame].rolls[2])
+          ).toString()
+        : (
+            Number(cumulativeSumUpTo) +
+            Number(this.knockedPins[this.currentFrame].rolls[0]) +
+            Number(this.knockedPins[this.currentFrame].rolls[1])
+          ).toString();
   }
 
   addThirdIndex(currentScore: number) {
@@ -164,8 +176,10 @@ export class AppComponent {
       }
     } else if (
       this.currentFrame === 9 &&
-      +this.knockedPins[9].rolls[0] !== 10 &&
-      +this.knockedPins[9].rolls[0] + +this.knockedPins[9].rolls[1] === 10 &&
+      Number(this.knockedPins[9].rolls[0]) !== 10 &&
+      Number(this.knockedPins[9].rolls[0]) +
+        Number(this.knockedPins[9].rolls[1]) ===
+        10 &&
       this.knockedPins[9].rolls.length === 2
     ) {
       this.knockedPins[this.currentFrame].rolls.push('');
@@ -202,6 +216,7 @@ export class AppComponent {
     this.noOfRolls = -1;
     this.currentFrame = -1;
     this.isGameOver = false;
+    this.frameIndex = -1;
 
     for (let i = 0; i < this.noOfFrames; i++) {
       this.allPins.push({ isAvailable: true, value: i });

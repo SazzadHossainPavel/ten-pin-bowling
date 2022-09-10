@@ -25,11 +25,11 @@
       <div class="box" *ngFor="let frame of knockedPins; let i = index">
         <span class="frame">{{ frame.cumulativeSum }}</span>
         <div
+          *ngFor="let roll of frame.rolls; let j = index"
           class="inner-box"
           [class.last]="
-            i === knockedPins.length - 1 && j === 0 && roll && +roll === 10
+            frame.rolls.length === 3 && j === 0 && roll && +roll === 10
           "
-          *ngFor="let roll of frame.rolls; let j = index"
         >
           <span
             class="point"
