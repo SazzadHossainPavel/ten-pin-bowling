@@ -22,6 +22,6 @@ describe('AppComponent', () => {
 
     const h1 = fixture.debugElement.query(By.css('header h1'));
 
-    expect(h1.nativeElement.innerText).toContain('Bowling demo');
+    expect(h1.nativeElement.innerText).toContain('Ten-pin Bowling');
   });
 });

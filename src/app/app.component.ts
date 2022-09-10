@@ -229,7 +229,13 @@ export class AppComponent {
   addPins(n: number) {
     this.startGame(n);
 
-    if (this.frameIndex === 1) {
+    if (
+      (this.frameIndex === 1 && this.currentFrame !== 9) ||
+      (this.currentFrame === 9 &&
+        Number(this.knockedPins[9].rolls[0]) +
+          Number(this.knockedPins[9].rolls[1]) ===
+          10)
+    ) {
       this.allPins.map((pins) => {
         pins.isAvailable = true;
         return pins;

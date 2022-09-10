@@ -1,5 +1,9 @@
+$primay-color: #337ab7;
+$secondary-color: #204d74;
+$card-color: #e8e8e8;
+
 header {
-  background-color: #337ab7;
+  background-color: $primay-color;
   color: #fff;
   height: 60px;
 
@@ -46,6 +50,7 @@ header {
 
       & .btn-roll {
         border: 1px solid #000;
+        background-color: $card-color;
       }
 
       & .disabled {
@@ -86,6 +91,7 @@ header {
         justify-content: flex-end;
         position: relative;
         border-radius: 2px;
+        background-color: $card-color;
 
         & .frame {
           position: absolute;
@@ -132,22 +138,22 @@ header {
 
     & .btn:hover {
       scale: 0.98;
-      background-color: #204d74;
+      background-color: $secondary-color;
     }
 
     & .btn-primary {
-      background-color: #337ab7;
+      background-color: $primay-color;
       color: #fff;
     }
 
     & .btn-outline {
       background-color: #fff;
-      border: 1px solid #337ab7;
+      border: 1px solid $primay-color;
     }
 
     & .btn-outline:hover {
       scale: 0.98;
-      background-color: #204d74;
+      background-color: $secondary-color;
       color: #fff;
     }
 

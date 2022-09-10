@@ -1,6 +1,6 @@
 <header>
   <div class="container flex">
-    <h1>Bowling demo</h1>
+    <h1>Ten-pin Bowling</h1>
   </div>
 </header>
 
@@ -27,23 +27,32 @@
         <div
           *ngFor="let roll of frame.rolls; let j = index"
           class="inner-box"
-          [class.last]="
-            frame.rolls.length === 3 && j === 0 && roll && +roll === 10
-          "
+          [class.last]="frame.rolls.length === 3 && j === 0"
         >
           <span
             class="point"
-            *ngIf="(j === 0 || i === 9) && roll && +roll === 10; else spare"
+            *ngIf="
+              (j === 0 ||
+                (j === 1 && i === 9 && +frame.rolls[0] === 10) ||
+                (j === 2 &&
+                  i === 9 &&
+                  (+frame.rolls[1] === 10 ||
+                    +frame.rolls[0] + +frame.rolls[1] === 10))) &&
+                roll &&
+                +roll === 10;
+              else spare
+            "
             >&#x2715;</span
           >
           <ng-template #spare>
             <span
               class="point"
               *ngIf="
-                j === 1 && roll && +roll + +frame.rolls[0] === 10;
+                (j === 1 && roll && +roll + +frame.rolls[0] === 10) ||
+                  (j === 2 && roll && +roll + +frame.rolls[1] === 10);
                 else other
               "
-              >{{ +roll > 0 ? "/" : "" }}</span
+              >/</span
             >
           </ng-template>
 
