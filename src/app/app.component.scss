@@ -1,34 +1,28 @@
-$primay-color: #337ab7;
-$secondary-color: #204d74;
-$card-color: #e8e8e8;
+@import "../assets/css/utilities";
+
+.flex-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
 
 header {
   background-color: $primay-color;
   color: #fff;
   height: 60px;
 
-  & .flex {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-  }
-
   & .container {
-    width: 90%;
-    max-width: 1190px;
-    margin: 0 auto;
+    @extend %container;
     overflow: auto;
     height: 100%;
+  }
 
-    & h1 {
-      margin: 0;
-    }
+  & h1 {
+    margin: 0;
   }
 }
 
-.pt-2 {
-  padding-top: 2em;
-
+.pins-container {
   & .container {
     width: 90%;
     max-width: 1190px;
@@ -69,9 +63,7 @@ header {
   }
 }
 
-.pt-1 {
-  padding-top: 1em;
-
+.score-board-container {
   & .container {
     width: 90%;
     max-width: 1190px;
@@ -121,9 +113,7 @@ header {
   }
 }
 
-.pt-2 {
-  padding-top: 2em;
-
+.action-container {
   & .container {
     width: 90%;
     max-width: 1190px;
@@ -160,10 +150,6 @@ header {
     & .btn:disabled {
       opacity: 0.4;
       cursor: not-allowed;
-    }
-
-    & .m-1 {
-      margin: 1em;
     }
   }
 
