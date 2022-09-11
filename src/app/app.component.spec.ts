@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 
@@ -15,13 +14,5 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'bowling-practice'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-
-    const h1 = fixture.debugElement.query(By.css('header h1'));
-
-    expect(h1.nativeElement.innerText).toContain('Ten-pin Bowling');
   });
 });
