@@ -33,9 +33,9 @@
           [class.last]="frame.rolls.length === 3 && rollIndex === 0"
         >
           <!-- it prints strike(X), 
-             1) on first roll when it has a value 10, 
-             2) on 10th frame's second roll when first roll has a 10,
-             3) on 10th frame's third roll when up to second roll it has a cumulative value 10 -->
+             1) on first roll when it has a strike, 
+             2) on 10th frame's second roll when first roll has a strike,
+             3) on 10th frame's third roll when i) second roll has a strike, ii) upto second roll has a spare -->
           <span
             class="point"
             *ngIf="
@@ -46,7 +46,8 @@
                 (rollIndex === 2 &&
                   frameIndex === 9 &&
                   (+frame.rolls[1] === 10 ||
-                    +frame.rolls[0] + +frame.rolls[1] === 10))) &&
+                    (+frame.rolls[0] + +frame.rolls[1] === 10 &&
+                      +frame.rolls[0] !== 10)))) &&
                 roll &&
                 +roll === 10;
               else spare
@@ -55,12 +56,15 @@
           >
           <ng-template #spare>
             <!-- otherwise it prints spare(/), 
-             1) on second roll when first and second value sums to 10, 
-             2) on third roll when second and third value sums to 10 -->
+             1) on second roll when upto second roll has a spare and first roll does not have a strike, 
+             2) on third roll when upto third roll has a spare -->
             <span
               class="point"
               *ngIf="
-                (rollIndex === 1 && roll && +roll + +frame.rolls[0] === 10) ||
+                (rollIndex === 1 &&
+                  roll &&
+                  +roll + +frame.rolls[0] === 10 &&
+                  +frame.rolls[0] !== 10) ||
                   (rollIndex === 2 && roll && +roll + +frame.rolls[1] === 10);
                 else other
               "
