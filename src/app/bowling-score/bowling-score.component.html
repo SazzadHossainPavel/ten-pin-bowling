@@ -9,8 +9,8 @@
     <div class="pins">
       <button
         class="btn btn-roll"
-        [class.disabled]="!pins.isAvailable || isGameOver"
-        (click)="addPins(pins.value)"
+        [class.disabled]="!pins.isAvailable || isGameOver || !isSpecificPins"
+        (click)="addSpecificPins(pins.value)"
         *ngFor="let pins of allPins"
       >
         {{ pins.value }}
@@ -61,6 +61,10 @@
           </ng-template>
         </div>
       </div>
+      <div class="box total-sum">
+        <p class="total-sum-title">Total Score</p>
+        <p class="total-sum-value">{{ totalSum }}</p>
+      </div>
     </div>
   </div>
 </section>
@@ -69,8 +73,8 @@
   <div class="container generate-score">
     <button
       class="btn btn-primary m-1"
-      [disabled]="isGameOver"
-      (click)="startGame()"
+      [disabled]="isGameOver || !isRandomPins"
+      (click)="addRandomPins()"
     >
       Random knocked pins
     </button>

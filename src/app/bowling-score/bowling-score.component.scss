@@ -109,6 +109,21 @@ header {
           border-bottom: 1px solid rgba(0, 0, 0, 0.5);
         }
       }
+
+      & .total-sum {
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        text-align: center;
+
+        & p {
+          margin: 0;
+        }
+
+        & .total-sum-value {
+          font-size: 2rem;
+        }
+      }
     }
   }
 }

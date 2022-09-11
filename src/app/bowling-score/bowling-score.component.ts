@@ -14,8 +14,45 @@ export class BowlingScoreComponent {
   currentFrame: number = -1;
   frameIndex: number = -1;
   isGameOver = false;
+  isSpecificPins = true;
+  isRandomPins = true;
+  totalSum = 0;
 
   constructor() {
+    this.initializeGame();
+  }
+
+  addRandomPins() {
+    this.isSpecificPins = false;
+    this.isRandomPins = true;
+
+    const n = this.getRandomRollScore();
+    this.startGame(n);
+  }
+
+  addSpecificPins(n: number) {
+    this.isSpecificPins = true;
+    this.isRandomPins = false;
+
+    this.startGame(n);
+    this.checkAvailablePins(n);
+  }
+
+  clearScore() {
+    this.allPins = [];
+    this.knockedPins = [];
+    this.noOfRolls = -1;
+    this.currentFrame = -1;
+    this.isGameOver = false;
+    this.frameIndex = -1;
+    this.isSpecificPins = true;
+    this.isRandomPins = true;
+    this.totalSum = 0;
+
+    this.initializeGame();
+  }
+
+  private initializeGame() {
     for (let i = 0; i < this.noOfFrames; i++) {
       this.allPins.push({ isAvailable: true, value: i });
       this.knockedPins.push({ rolls: ['', ''], cumulativeSum: '' });
@@ -24,13 +61,13 @@ export class BowlingScoreComponent {
     this.allPins.push({ isAvailable: true, value: this.noOfFrames });
   }
 
-  randomRoll(firstRoll?: number) {
+  private randomRoll(firstRoll?: number) {
     return firstRoll
       ? Math.ceil(Math.random() * (11 - firstRoll)) - 1
       : Math.ceil(Math.random() * 11) - 1;
   }
 
-  getRollIndex(n: number): number {
+  private getRollIndex(n: number): number {
     if (
       this.currentFrame !== -1 &&
       this.knockedPins[this.currentFrame].rolls.length > 2
@@ -41,10 +78,13 @@ export class BowlingScoreComponent {
     }
   }
 
-  getRandomRollScore() {
+  private getRandomRollScore() {
     let currentScore = 0;
 
-    if (this.knockedPins[this.currentFrame].rolls[0] === '') {
+    if (
+      this.currentFrame === -1 ||
+      this.knockedPins[this.currentFrame].rolls[0] === ''
+    ) {
       currentScore = this.randomRoll();
     } else {
       currentScore = this.randomRoll(
@@ -55,7 +95,7 @@ export class BowlingScoreComponent {
     return currentScore;
   }
 
-  checkGameOver() {
+  private checkGameOver() {
     if (this.currentFrame === 9) {
       if (
         Number(this.knockedPins[9].rolls[0]) === 10 &&
@@ -86,7 +126,7 @@ export class BowlingScoreComponent {
     }
   }
 
-  calculateScore() {
+  private calculateScore() {
     const secondLastFrame = this.currentFrame > 1 ? this.currentFrame - 2 : -1;
 
     const previousFrame = this.currentFrame > 0 ? this.currentFrame - 1 : -1;
@@ -161,9 +201,11 @@ export class BowlingScoreComponent {
             Number(this.knockedPins[this.currentFrame].rolls[0]) +
             Number(this.knockedPins[this.currentFrame].rolls[1])
           ).toString();
+
+    this.totalSum = Number(this.knockedPins[this.currentFrame].cumulativeSum);
   }
 
-  addThirdIndex(currentScore: number) {
+  private checkThirdRoll(currentScore: number) {
     if (this.frameIndex === 0 && currentScore === 10) {
       if (this.currentFrame === 9) {
         this.knockedPins[this.currentFrame].rolls.push('');
@@ -182,7 +224,7 @@ export class BowlingScoreComponent {
     }
   }
 
-  startGame(n?: number) {
+  private startGame(currentScore: number) {
     this.noOfRolls++;
 
     this.frameIndex = this.getRollIndex(this.noOfRolls);
@@ -193,38 +235,17 @@ export class BowlingScoreComponent {
         ? 9
         : Math.floor(this.noOfRolls / 2);
 
-    const currentScore =
-      typeof n !== 'undefined' ? n : this.getRandomRollScore();
-
     this.knockedPins[this.currentFrame].rolls[this.frameIndex] =
       currentScore.toString();
 
     if (this.currentFrame < this.noOfFrames) {
-      this.addThirdIndex(currentScore);
+      this.checkThirdRoll(currentScore);
       this.calculateScore();
       this.checkGameOver();
     }
   }
 
-  clearScore() {
-    this.allPins = [];
-    this.knockedPins = [];
-    this.noOfRolls = -1;
-    this.currentFrame = -1;
-    this.isGameOver = false;
-    this.frameIndex = -1;
-
-    for (let i = 0; i < this.noOfFrames; i++) {
-      this.allPins.push({ isAvailable: true, value: i });
-      this.knockedPins.push({ rolls: ['', ''], cumulativeSum: '' });
-    }
-
-    this.allPins.push({ isAvailable: true, value: this.noOfFrames });
-  }
-
-  addPins(n: number) {
-    this.startGame(n);
-
+  private checkAvailablePins(n: number) {
     if (
       (this.frameIndex === 1 && this.currentFrame !== 9) ||
       (this.currentFrame === 9 &&
