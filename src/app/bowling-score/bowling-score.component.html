@@ -22,20 +22,29 @@
 <section class="score-board-container pt-1">
   <div class="container">
     <div class="score-board">
-      <div class="box" *ngFor="let frame of knockedPins; let i = index">
+      <div
+        class="box"
+        *ngFor="let frame of knockedPins; let frameIndex = index"
+      >
         <span class="frame">{{ frame.cumulativeSum }}</span>
         <div
-          *ngFor="let roll of frame.rolls; let j = index"
+          *ngFor="let roll of frame.rolls; let rollIndex = index"
           class="inner-box"
-          [class.last]="frame.rolls.length === 3 && j === 0"
+          [class.last]="frame.rolls.length === 3 && rollIndex === 0"
         >
+          <!-- it prints strike(X), 
+             1) on first roll when it has a value 10, 
+             2) on 10th frame's second roll when first roll has a 10,
+             3) on 10th frame's third roll when up to second roll it has a cumulative value 10 -->
           <span
             class="point"
             *ngIf="
-              (j === 0 ||
-                (j === 1 && i === 9 && +frame.rolls[0] === 10) ||
-                (j === 2 &&
-                  i === 9 &&
+              (rollIndex === 0 ||
+                (rollIndex === 1 &&
+                  frameIndex === 9 &&
+                  +frame.rolls[0] === 10) ||
+                (rollIndex === 2 &&
+                  frameIndex === 9 &&
                   (+frame.rolls[1] === 10 ||
                     +frame.rolls[0] + +frame.rolls[1] === 10))) &&
                 roll &&
@@ -45,11 +54,14 @@
             >&#x2715;</span
           >
           <ng-template #spare>
+            <!-- otherwise it prints spare(/), 
+             1) on second roll when first and second value sums to 10, 
+             2) on third roll when second and third value sums to 10 -->
             <span
               class="point"
               *ngIf="
-                (j === 1 && roll && +roll + +frame.rolls[0] === 10) ||
-                  (j === 2 && roll && +roll + +frame.rolls[1] === 10);
+                (rollIndex === 1 && roll && +roll + +frame.rolls[0] === 10) ||
+                  (rollIndex === 2 && roll && +roll + +frame.rolls[1] === 10);
                 else other
               "
               >/</span
@@ -57,6 +69,7 @@
           </ng-template>
 
           <ng-template #other>
+            <!-- otherwise prints the roll value -->
             <span class="point"> {{ roll }}</span>
           </ng-template>
         </div>
