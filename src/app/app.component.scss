@@ -1,0 +1,23 @@
+@import "../assets/css/utilities";
+
+.flex-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+header {
+  background-color: $primay-color;
+  color: #fff;
+  height: 60px;
+
+  & .container {
+    @extend %container;
+    overflow: auto;
+    height: 100%;
+  }
+
+  & h1 {
+    margin: 0;
+  }
+}

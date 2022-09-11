@@ -51,7 +51,7 @@
           <ng-template #spare>
             <!-- otherwise it prints spare(/), 
              1) on second roll when upto second roll has a spare and first roll does not have a strike, 
-             2) on third roll when upto third roll has a spare -->
+             2) on third roll when upto third roll has a spare and first roll have a strike -->
             <span
               class="point"
               *ngIf="
@@ -59,7 +59,10 @@
                   roll &&
                   +roll + +frame.rolls[0] === 10 &&
                   +frame.rolls[0] !== 10) ||
-                  (rollIndex === 2 && roll && +roll + +frame.rolls[1] === 10);
+                  (rollIndex === 2 &&
+                    roll &&
+                    +roll + +frame.rolls[1] === 10 &&
+                    +frame.rolls[0] === 10);
                 else other
               "
               >/</span
