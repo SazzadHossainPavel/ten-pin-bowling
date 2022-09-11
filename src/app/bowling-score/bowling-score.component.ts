@@ -109,7 +109,7 @@ export class BowlingScoreComponent {
     if (this.currentFrame === 9) {
       if (
         // game is over when 10th frame first roll is a strike and completes all the 3 rolls
-        Number(this.knockedPins[9].rolls[0]) === 10 &&
+        this.isStrike(9) &&
         this.knockedPins[9].rolls[1] !== '' &&
         this.knockedPins[9].rolls[2] !== ''
       ) {
@@ -117,20 +117,16 @@ export class BowlingScoreComponent {
         return;
       } else if (
         // or, game is over when 10th frame has a spare and completes all the 3 rolls
-        Number(this.knockedPins[9].rolls[0]) !== 10 &&
-        Number(this.knockedPins[9].rolls[0]) +
-          Number(this.knockedPins[9].rolls[1]) ===
-          10 &&
+        !this.isStrike(9) &&
+        this.isSpare(9) &&
         this.knockedPins[9].rolls[2] !== ''
       ) {
         this.isGameOver = true;
         return;
       } else if (
         // otherwise, game is over when 10th frame completes all the 2 rolls
-        Number(this.knockedPins[9].rolls[0]) !== 10 &&
-        Number(this.knockedPins[9].rolls[0]) +
-          Number(this.knockedPins[9].rolls[1]) !==
-          10 &&
+        !this.isStrike(9) &&
+        !this.isSpare(9) &&
         this.knockedPins[9].rolls[1] !== ''
       ) {
         this.isGameOver = true;
@@ -148,8 +144,8 @@ export class BowlingScoreComponent {
     // strike's bonus calculation for 2nd bonus
     if (secondLastFrame !== -1) {
       // executes when second last frame is valid
-      if (Number(this.knockedPins[secondLastFrame].rolls[0]) === 10) {
-        if (Number(this.knockedPins[previousFrame].rolls[0]) === 10) {
+      if (this.isStrike(secondLastFrame)) {
+        if (this.isStrike(previousFrame)) {
           if (this.frameIndex === 0) {
             // executes when second last frame and last frame has consecutive strikes
             // then adds the current roll value to the second last frame's cumulative value
@@ -171,7 +167,7 @@ export class BowlingScoreComponent {
     // strike's bonus calculation for 1st bonus
     if (previousFrame !== -1) {
       // executes when last frame is valid
-      if (Number(this.knockedPins[previousFrame].rolls[0]) === 10) {
+      if (this.isStrike(previousFrame)) {
         if (this.frameIndex === 0) {
           // executes when last frame has a strike
           // then adds the first roll value to the last frame's cumulative value
@@ -197,10 +193,8 @@ export class BowlingScoreComponent {
       // executes when last frame is valid
       const previousSpare =
         this.frameIndex === 0 &&
-        Number(this.knockedPins[previousFrame].rolls[0]) +
-          Number(this.knockedPins[previousFrame].rolls[1]) ===
-          10 &&
-        Number(this.knockedPins[previousFrame].rolls[0]) !== 10;
+        this.isSpare(previousFrame) &&
+        !this.isStrike(previousFrame);
 
       if (previousSpare) {
         // executes when a valid spare is found
@@ -249,10 +243,8 @@ export class BowlingScoreComponent {
       }
     } else if (
       this.currentFrame === 9 &&
-      Number(this.knockedPins[9].rolls[0]) !== 10 &&
-      Number(this.knockedPins[9].rolls[0]) +
-        Number(this.knockedPins[9].rolls[1]) ===
-        10 &&
+      !this.isStrike(9) &&
+      this.isSpare(9) &&
       this.knockedPins[9].rolls.length === 2
     ) {
       // adds 3rd index when 10th frame's first roll has no strike and a spare found
@@ -290,10 +282,7 @@ export class BowlingScoreComponent {
   private checkAvailablePins(n: number) {
     if (
       (this.frameIndex === 1 && this.currentFrame !== 9) ||
-      (this.currentFrame === 9 &&
-        Number(this.knockedPins[9].rolls[0]) +
-          Number(this.knockedPins[9].rolls[1]) ===
-          10)
+      (this.currentFrame === 9 && this.isSpare(9))
     ) {
       // all pins available, 1) when second roll already executed and it's not 10th frame
       // 2) when 10th frame has a spare
@@ -313,5 +302,17 @@ export class BowlingScoreComponent {
         this.allPins[i].isAvailable = false;
       }
     }
+  }
+
+  private isStrike(frameIndex: number) {
+    return Number(this.knockedPins[frameIndex].rolls[0]) === 10;
+  }
+
+  private isSpare(frameIndex: number) {
+    return (
+      Number(this.knockedPins[frameIndex].rolls[0]) +
+        Number(this.knockedPins[frameIndex].rolls[1]) ===
+      10
+    );
   }
 }
